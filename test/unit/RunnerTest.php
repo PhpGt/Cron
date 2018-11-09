@@ -1,16 +1,30 @@
 <?php
 namespace Gt\Cron\Test;
 
-use Cron\CronExpression;
+use Gt\Cron\ParseException;
+use Gt\Cron\Runner;
 use PHPUnit\Framework\TestCase;
 
 class RunnerTest extends TestCase {
-	public function testRunnerThrowsExceptionWithInvalidCron() {
+	public function testParseException() {
 		$cronContents = <<<CRON
 * * * * * * * * * * ThisShouldNotWork::example
 CRON;
 
 		self::expectException(ParseException::class);
-		$runner = new Runner($cronContents);
+		new Runner($cronContents);
+	}
+
+	public function testParseExceptionIdentifiesLine() {
+		$cronContents = <<<CRON
+0 22 * * 1-5 CronExample::TenOclockWeekday
+* * * * * CronExample::everyMinute
+15 00 * CronBadExample::notEnoughParts
+30 12 1 * * CronExample::halfTwelveOnFirstDayOfMonth
+CRON;
+
+		self::expectException(ParseException::class);
+		self::expectExceptionMessage("Error parsing cron: 15 00 * CronBadExample::notEnoughParts");
+		new Runner($cronContents);
 	}
 }
