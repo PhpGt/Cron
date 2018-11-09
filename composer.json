@@ -3,7 +3,11 @@
 	"description": "Run scripts or static functions at regular intervals.",
 
 	"require": {
-		"php": ">7.1"
+		"php": ">7.1",
+		"dragonmantank/cron-expression": "^2.2"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^7.4"
 	},
 
 	"autoload": {
@@ -13,7 +17,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Gt\\Cron\\Test": "./test/unit/"
+			"Gt\\Cron\\Test\\": "./test/unit/"
 		}
 	}
 }
