@@ -1,0 +1,19 @@
+{
+	"name": "phpgt/cron",
+	"description": "Run scripts or static functions at regular intervals.",
+
+	"require": {
+		"php": ">7.1"
+	},
+
+	"autoload": {
+		"psr-4": {
+			"Gt\\Cron\\": "./src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Gt\\Cron\\Test": "./test/unit/"
+		}
+	}
+}
