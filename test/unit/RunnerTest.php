@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class RunnerTest extends TestCase {
 	public function testParseException() {
 		$cronContents = <<<CRON
-* * * * * * * * * * ThisShouldNotWork::example
+* * * ABC * * * * * * ThisShouldNotWork::example
 CRON;
 
 		self::expectException(ParseException::class);
