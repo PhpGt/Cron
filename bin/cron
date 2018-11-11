@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+$autoloadLocations = [
+	implode(DIRECTORY_SEPARATOR, [
+		__DIR__,
+		"..",
+		"..",
+		"..",
+		"autoload.php",
+	]),
+	implode(DIRECTORY_SEPARATOR, [
+		__DIR__,
+		"..",
+		"vendor",
+		"autoload.php",
+	]),
+];
+
+foreach($autoloadLocations as $location) {
+	if(file_exists($location)) {
+		require($location);
+		break;
+	}
+}
