@@ -20,8 +20,9 @@ class Queue {
 
 	public function secondsUntilNextJob():int {
 		$nextJob = $this->getNextJob();
-		$now = $this->now()->getTimestamp();
-		return $now - $nextJob->getNextRunDate()->getTimestamp();
+		$now = $this->now();
+		$then = $nextJob->getNextRunDate($this->now);
+		return $then->getTimestamp() - $now->getTimestamp();
 	}
 
 	public function runDueJobs():int {

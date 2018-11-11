@@ -8,6 +8,8 @@ use InvalidArgumentException;
 class Runner {
 	/** @var Queue */
 	protected $queue;
+	/** @var bool */
+	public $stop;
 
 	public function __construct(
 		JobFactory $jobFactory,
@@ -40,18 +42,19 @@ class Runner {
 		}
 	}
 
-	public function run(bool $stop):int {
+	public function run(bool $stop = false):int {
+		$this->stop = $stop;
 		$jobsRan = 0;
 
 		do {
 			$this->queue->reset();
 			$jobsRan += $this->queue->runDueJobs();
 
-			if(!$stop) {
+			if(!$this->stop) {
 				sleep($this->queue->secondsUntilNextJob());
 			}
 		}
-		while(!$stop);
+		while(!$this->stop);
 
 		return $jobsRan;
 	}

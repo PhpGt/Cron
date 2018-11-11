@@ -6,6 +6,7 @@ use Gt\Cron\Job;
 use Gt\Cron\JobFactory;
 use Gt\Cron\ParseException;
 use Gt\Cron\Runner;
+use Gt\Cron\Test\Helper\Override;
 use PHPUnit\Framework\TestCase;
 
 class RunnerTest extends TestCase {
@@ -72,6 +73,32 @@ CRON;
 			2,
 			$runner->run(true)
 		);
+	}
+
+	public function testSleep() {
+// Set now to midday with a cron job at 10 past.
+		$now = new DateTime("2020-01-01 12:00:00");
+		$cronContents = <<<CRON
+10 * * * * ExampleClass::runAtTenMinutesPast
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobFactory(),
+			$cronContents,
+			$now
+		);
+
+		$secondsUntilNextJob = 0;
+
+		Override::setCallback(
+			"sleep",
+		function($seconds) use(&$secondsUntilNextJob, $runner) {
+			$secondsUntilNextJob = $seconds;
+			$runner->stop = true;
+		});
+
+		$runner->run();
+		self::assertEquals(600, $secondsUntilNextJob);
 	}
 
 	protected function mockJobFactory(string...$jobCommands):JobFactory {

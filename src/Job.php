@@ -23,8 +23,11 @@ class Job {
 		return $this->expression->isDue($now);
 	}
 
-	public function getNextRunDate():DateTime {
-		return $this->expression->getNextRunDate();
+	public function getNextRunDate(DateTime $now = null):DateTime {
+		if(is_null($now)) {
+			$now = new DateTime();
+		}
+		return $this->expression->getNextRunDate($now);
 	}
 
 	public function getCommand():string {
