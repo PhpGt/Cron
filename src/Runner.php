@@ -26,8 +26,8 @@ class Runner {
 				$matches
 			);
 
-			$crontab = $matches["crontab"];
-			$command = $matches["command"];
+			$crontab = $matches["crontab"] ?? null;
+			$command = $matches["command"] ?? null;
 
 			try {
 				$job = JobFactory::create(
