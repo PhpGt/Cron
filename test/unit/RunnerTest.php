@@ -101,6 +101,33 @@ CRON;
 		self::assertEquals(600, $secondsUntilNextJob);
 	}
 
+	public function testSleepGetsEarliest() {
+// Set now to midday with a cron job at 10 past.
+		$now = new DateTime("2020-01-01 12:00:00");
+		$cronContents = <<<CRON
+10 * * * * ExampleClass::runAtTenMinutesPast
+*/5 * * * * ExampleClass::runEveryFiveMinutes
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobFactory(),
+			$cronContents,
+			$now
+		);
+
+		$secondsUntilNextJob = 0;
+
+		Override::setCallback(
+			"sleep",
+			function($seconds) use(&$secondsUntilNextJob, $runner) {
+				$secondsUntilNextJob = $seconds;
+				$runner->stop = true;
+			});
+
+		$runner->run();
+		self::assertEquals(300, $secondsUntilNextJob);
+	}
+
 	protected function mockJobFactory(string...$jobCommands):JobFactory {
 		$job = self::createMock(Job::class);
 
