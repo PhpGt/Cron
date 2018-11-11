@@ -54,6 +54,26 @@ CRON;
 		);
 	}
 
+	public function testMultipleJobsRun() {
+		$now = new DateTime("2020-01-01 12:25:00");
+		$cronContents = <<<CRON
+10 * * * * ExampleClass::runAtTenMinutesPast
+25 * * * * ExampleClass::runAtTwentyFiveMinutesPast
+*/5 * * * * ExampleClass::runEveryFiveMinutes
+*/10 * * * * ExampleClass::runEveryTenMinutes
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobFactory(),
+			$cronContents,
+			$now
+		);
+		self::assertEquals(
+			2,
+			$runner->run(true)
+		);
+	}
+
 	protected function mockJobFactory(string...$jobCommands):JobFactory {
 		$job = self::createMock(Job::class);
 
