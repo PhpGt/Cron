@@ -27,4 +27,17 @@ CRON;
 		self::expectExceptionMessage("Error parsing cron: 15 00 * CronBadExample::notEnoughParts");
 		new Runner($cronContents);
 	}
+
+	public function testParseSuccess() {
+		$cronContents = <<<CRON
+* * * * * ThisShouldNotWork::example
+CRON;
+		$exception = null;
+		try {
+			new Runner($cronContents);
+		}
+		catch(\Exception $exception) {}
+
+		self::assertNull($exception, "No exception should be thrown");
+	}
 }
