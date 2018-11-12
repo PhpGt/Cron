@@ -3,6 +3,8 @@ namespace Gt\Cron\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cli\Command\Command;
+use Gt\Cron\RunnerFactory;
+use InvalidArgumentException;
 
 class ValidateCommand extends Command {
 	public function __construct() {
@@ -11,6 +13,16 @@ class ValidateCommand extends Command {
 	}
 
 	public function run(ArgumentValueList $arguments):void {
-		$this->stream->writeLine("VALIDATE RUN!");
+		try {
+			$runner = RunnerFactory::createForProject(
+				getcwd()
+			);
+		}
+		catch(InvalidArgumentException $exception) {
+			echo $exception->getMessage();
+			exit(1);
+		}
+
+		$this->stream->writeLine("OK");
 	}
 }
