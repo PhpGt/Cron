@@ -1,5 +1,11 @@
 #!/usr/bin/env php
 <?php
+
+use Gt\Cli\Application;
+use Gt\Cli\Argument\ArgumentList;
+use Gt\Cron\Command\RunCommand;
+use Gt\Cron\Command\ValidateCommand;
+
 $autoloadLocations = [
 	implode(DIRECTORY_SEPARATOR, [
 		__DIR__,
@@ -22,3 +28,11 @@ foreach($autoloadLocations as $location) {
 		break;
 	}
 }
+
+$app = new Application(
+	"PHP.Gt Cron",
+	new ArgumentList(...$argv),
+	new RunCommand(),
+	new ValidateCommand()
+);
+$app->run();
