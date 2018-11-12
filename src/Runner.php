@@ -6,10 +6,12 @@ use DateTime;
 use InvalidArgumentException;
 
 class Runner {
-	/** @var Queue */
-	protected $queue;
 	/** @var bool */
 	public $stop;
+	/** @var Queue */
+	protected $queue;
+	/** @var callable */
+	protected $runCallback;
 
 	public function __construct(
 		JobFactory $jobFactory,
@@ -20,6 +22,11 @@ class Runner {
 		$this->queue = new Queue($now);
 
 		foreach(explode("\n", $contents) as $line) {
+			$line = trim($line);
+			if(strlen($line) === 0) {
+				continue;
+			}
+
 			preg_match(
 				"/(?P<crontab>\S+\s\S+\s\S+\s\S+\s\S+)\s(?P<command>.+)/",
 				$line,
@@ -42,6 +49,10 @@ class Runner {
 		}
 	}
 
+	public function setRunCallback(callable $callback):void {
+		$this->runCallback = $callback;
+	}
+
 	public function run(bool $stop = false):int {
 		$this->stop = $stop;
 		$jobsRan = 0;
@@ -49,6 +60,15 @@ class Runner {
 		do {
 			$this->queue->reset();
 			$jobsRan += $this->queue->runDueJobs();
+
+			if(is_callable($this->runCallback)) {
+				call_user_func(
+					$this->runCallback,
+					$jobsRan,
+					$this->queue->timeOfNextJob(),
+					$stop
+				);
+			}
 
 			if(!$this->stop) {
 				sleep($this->queue->secondsUntilNextJob());
