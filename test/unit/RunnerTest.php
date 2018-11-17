@@ -167,6 +167,29 @@ CRON;
 		);
 	}
 
+	public function testRunCallbackIsExecuted() {
+		$cronContents = <<<CRON
+* * * * * ExampleClass::example
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobFactory(),
+			$cronContents
+		);
+
+		$count = 0;
+
+		$runner->setRunCallback(function() use(&$count) {
+			$count++;
+		});
+
+		self::assertEquals(0, $count);
+		$runner->run(true);
+		self::assertEquals(1, $count);
+		$runner->run(true);
+		self::assertEquals(2, $count);
+	}
+
 	protected function mockJobFactory(string...$jobCommands):JobFactory {
 		$job = self::createMock(Job::class);
 
