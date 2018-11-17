@@ -37,7 +37,9 @@ class Runner {
 			$command = $matches["command"] ?? null;
 
 			try {
-				$job = JobFactory::create(
+// TODO: This is a concern for unit tests... calling a static method is impossible to test.
+				$job = call_user_func(
+					[$jobFactory, "create"],
 					CronExpression::factory($crontab),
 					$command
 				);
