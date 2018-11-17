@@ -128,6 +128,45 @@ CRON;
 		self::assertEquals(300, $secondsUntilNextJob);
 	}
 
+	public function testRunNumber() {
+		$cronContents = <<<CRON
+* * * * * ExampleClass::one
+* * * * * ExampleClass::two
+* * * * * ExampleClass::three
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobFactory(),
+				$cronContents
+		);
+
+		self::assertEquals(
+			3,
+			$runner->run(true)
+		);
+	}
+
+	public function testRunNumberWithBlankLines() {
+		$cronContents = <<<CRON
+* * * * * ExampleClass::one
+
+* * * * * ExampleClass::two
+* * * * * ExampleClass::three
+
+
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobFactory(),
+			$cronContents
+		);
+
+		self::assertEquals(
+			3,
+			$runner->run(true)
+		);
+	}
+
 	protected function mockJobFactory(string...$jobCommands):JobFactory {
 		$job = self::createMock(Job::class);
 
