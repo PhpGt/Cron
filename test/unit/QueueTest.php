@@ -91,4 +91,31 @@ class QueueTest extends TestCase {
 
 		$queue->reset();
 	}
+
+	public function testNow() {
+		$then = [];
+		$then []= new DateTime("+4 minutes");
+		$then []= new DateTime("+6 minutes");
+		$now = new DateTime("+5 minutes");
+		$thenToggle = false;
+
+		$job = self::createMock(Job::class);
+		$job->method("getNextRunDate")
+		->willReturnCallback(function()
+		use($then, &$thenToggle) {
+			$value = $then[(int)$thenToggle];
+			$thenToggle = !$thenToggle;
+			return $value;
+		});
+
+		/** @var Job $job */
+		$queue = new Queue($now);
+		$queue->add($job);
+		$queue->add($job);
+
+		self::assertEquals(
+			$then[1],
+			$queue->timeOfNextJob()
+		);
+	}
 }
