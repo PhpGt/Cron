@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Cron\Test;
 
+use DateTime;
 use Gt\Cron\Job;
 use Gt\Cron\Queue;
 use PHPUnit\Framework\TestCase;
@@ -17,5 +18,22 @@ class QueueTest extends TestCase {
 		$queue = new Queue();
 		$queue->add($job);
 		self::assertNotNull($queue->getNextJob());
+	}
+
+	public function testTimeOfNextJob() {
+		$expectedTimeOfNextJob = new DateTime("+5 minutes");
+
+		$job = self::createMock(Job::class);
+		$job->method("getNextRunDate")
+			->willReturn($expectedTimeOfNextJob);
+
+		/** @var Job $job */
+		$queue = new Queue();
+		$queue->add($job);
+
+		self::assertEquals(
+			$expectedTimeOfNextJob,
+			$queue->timeOfNextJob()
+		);
 	}
 }
