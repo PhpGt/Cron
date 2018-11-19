@@ -36,7 +36,7 @@ class Queue {
 
 		foreach($this->jobList as $job) {
 			if(!$job->hasRun()
-			&& $job->isDue($this->now)) {
+			&& $job->isDue($this->now())) {
 				$job->run();
 				$jobsRan++;
 			}
@@ -67,7 +67,7 @@ class Queue {
 		return $nextJob;
 	}
 
-	protected function now():DateTime {
+	public function now():DateTime {
 		if(is_null($this->now)) {
 			return new DateTime;
 		}
