@@ -14,7 +14,7 @@ class RunnerFactory {
 			throw new CrontabNotFoundException($crontabPath);
 		}
 
-		$jobFactory = new JobFactory();
+		$jobFactory = new JobRepository();
 		return new Runner(
 			$jobFactory,
 			file_get_contents($crontabPath)

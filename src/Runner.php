@@ -14,12 +14,19 @@ class Runner {
 	protected $runCallback;
 
 	public function __construct(
-		JobFactory $jobFactory,
+		JobRepository $jobRepository,
+		QueueRepository $queueRepository,
 		string $contents,
 		DateTime &$now = null
 	) {
-		$this->jobList = [];
-		$this->queue = new Queue($now);
+		if(is_null($now)) {
+			$now = new DateTime();
+		}
+
+		$this->queue = call_user_func_array(
+			[$queueRepository, "createAtTime"],
+			[&$now]
+		);
 
 		foreach(explode("\n", $contents) as $line) {
 			$line = trim($line);
@@ -39,7 +46,7 @@ class Runner {
 			try {
 // TODO: This is a concern for unit tests... calling a static method is impossible to test.
 				$job = call_user_func(
-					[$jobFactory, "create"],
+					[$jobRepository, "create"],
 					CronExpression::factory($crontab),
 					$command
 				);

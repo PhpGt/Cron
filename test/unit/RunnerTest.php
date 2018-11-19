@@ -1,10 +1,13 @@
 <?php
 namespace Gt\Cron\Test;
 
+use DateInterval;
 use DateTime;
 use Gt\Cron\Job;
-use Gt\Cron\JobFactory;
+use Gt\Cron\JobRepository;
 use Gt\Cron\ParseException;
+use Gt\Cron\Queue;
+use Gt\Cron\QueueRepository;
 use Gt\Cron\Runner;
 use Gt\Cron\Test\Helper\Override;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +20,8 @@ CRON;
 
 		self::expectException(ParseException::class);
 		new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(),
+			$this->mockQueueRepository(),
 			$cronContents
 		);
 	}
@@ -32,7 +36,9 @@ CRON;
 
 		self::expectException(ParseException::class);
 		self::expectExceptionMessage("Error parsing cron: 15 00 * CronBadExample::notEnoughParts");
-		new Runner($this->mockJobFactory(),
+		new Runner(
+			$this->mockJobRepository(),
+			$this->mockQueueRepository(),
 			$cronContents
 		);
 	}
@@ -44,8 +50,18 @@ CRON;
 15 * * * * ExampleClass::runAtFifteenMinutesPast
 CRON;
 
+		$expectedWait = [
+			0,
+			5 * 60
+		];
+
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(
+				...$expectedWait
+			),
+			$this->mockQueueRepository(
+				...$expectedWait
+			),
 			$cronContents,
 			$now
 		);
@@ -64,8 +80,20 @@ CRON;
 */10 * * * * ExampleClass::runEveryTenMinutes
 CRON;
 
+		$expectedWait = [
+			45 * 60,
+			0,
+			0,
+			5 * 60
+		];
+
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(
+				...$expectedWait
+			),
+			$this->mockQueueRepository(
+				...$expectedWait
+			),
 			$cronContents,
 			$now
 		);
@@ -81,9 +109,17 @@ CRON;
 		$cronContents = <<<CRON
 10 * * * * ExampleClass::runAtTenMinutesPast
 CRON;
+		$expectedWait = [
+			10 * 60,
+		];
 
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(
+				...$expectedWait
+			),
+			$this->mockQueueRepository(
+				...$expectedWait
+			),
 			$cronContents,
 			$now
 		);
@@ -109,8 +145,14 @@ CRON;
 */5 * * * * ExampleClass::runEveryFiveMinutes
 CRON;
 
+		$expectedWait = [
+			10 * 60,
+			5 * 60,
+		];
+
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(...$expectedWait),
+			$this->mockQueueRepository(...$expectedWait),
 			$cronContents,
 			$now
 		);
@@ -134,9 +176,15 @@ CRON;
 * * * * * ExampleClass::two
 * * * * * ExampleClass::three
 CRON;
+		$expectedWait = [
+			0,
+			0,
+			0,
+		];
 
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(...$expectedWait),
+				$this->mockQueueRepository(...$expectedWait),
 				$cronContents
 		);
 
@@ -155,9 +203,15 @@ CRON;
 
 
 CRON;
+		$expectedWait = [
+			0,
+			0,
+			0,
+		];
 
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(...$expectedWait),
+			$this->mockQueueRepository(...$expectedWait),
 			$cronContents
 		);
 
@@ -171,9 +225,13 @@ CRON;
 		$cronContents = <<<CRON
 * * * * * ExampleClass::example
 CRON;
+		$expectedWait = [
+			0,
+		];
 
 		$runner = new Runner(
-			$this->mockJobFactory(),
+			$this->mockJobRepository(...$expectedWait),
+			$this->mockQueueRepository(...$expectedWait),
 			$cronContents
 		);
 
@@ -190,14 +248,58 @@ CRON;
 		self::assertEquals(2, $count);
 	}
 
-	protected function mockJobFactory(string...$jobCommands):JobFactory {
-		$job = self::createMock(Job::class);
+	protected function mockJobRepository(int...$wait):JobRepository {
+		$isDue = [];
+		$runDate = [];
+		foreach($wait as $w) {
+			$isDue []= $w === 0;
+			$d = new DateTime();
+			$d->add(new DateInterval("PT{$w}S"));
+			$runDate []= $d;
+		}
 
-		$factory = self::createMock(JobFactory::class);
-		$factory->method("create")
+		$job = self::createMock(Job::class);
+		$job->method("isDue")
+			->willReturnOnConsecutiveCalls(...$isDue);
+		$job->method("getNextRunDate")
+			->willReturnOnConsecutiveCalls(...$runDate);
+
+		$repository = self::createMock(JobRepository::class);
+		$repository->method("create")
 			->willReturn($job);
 
-		/** @var JobFactory $factory */
-		return $factory;
+
+
+		/** @var JobRepository $repository */
+		return $repository;
+	}
+
+	protected function mockQueueRepository(int...$wait):QueueRepository {
+		$numberDueJobs = 0;
+		$secondsUntilNextJob = null;
+
+		foreach($wait as $w) {
+			if($w === 0) {
+				$numberDueJobs++;
+			}
+
+			if(is_null($secondsUntilNextJob)
+			|| $w < $secondsUntilNextJob) {
+				$secondsUntilNextJob = $w;
+			}
+		}
+
+		$queue = self::createMock(Queue::class);
+		$queue->method("runDueJobs")
+			->willReturn($numberDueJobs);
+		$queue->method("secondsUntilNextJob")
+			->willReturn($secondsUntilNextJob);
+
+		$repository = self::createMock(QueueRepository::class);
+		$repository->method("createAtTime")
+			->willReturn($queue);
+
+		/** @var QueueRepository $repository */
+		return $repository;
 	}
 }
