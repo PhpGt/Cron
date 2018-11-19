@@ -88,8 +88,8 @@ class JobTest extends TestCase {
 			$id2 = uniqid()
 		);
 
-		self::assertEquals($id1, $job1->getCommand());
 		self::assertEquals($id2, $job2->getCommand());
+		self::assertEquals($id1, $job1->getCommand());
 	}
 
 	public function assertDateTimeEquals(
