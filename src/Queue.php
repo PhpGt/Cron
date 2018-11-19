@@ -51,7 +51,7 @@ class Queue {
 		}
 	}
 
-	public function getNextJob():Job {
+	public function getNextJob():?Job {
 		/** @var Job|null $nextJob */
 		$nextJob = null;
 
