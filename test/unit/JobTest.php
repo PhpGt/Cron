@@ -78,6 +78,20 @@ class JobTest extends TestCase {
 		);
 	}
 
+	public function testGetCommand() {
+		$job1 = new Job(
+			$this->mockExpression(),
+			$id1 = uniqid()
+		);
+		$job2 = new Job(
+			$this->mockExpression(),
+			$id2 = uniqid()
+		);
+
+		self::assertEquals($id1, $job1->getCommand());
+		self::assertEquals($id2, $job2->getCommand());
+	}
+
 	public function assertDateTimeEquals(
 		DateTime $expected,
 		DateTime $actual,
