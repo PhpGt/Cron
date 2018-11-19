@@ -57,6 +57,27 @@ class JobTest extends TestCase {
 		);
 	}
 
+	public function testGetNextRunDateWithSuppliedDate() {
+		$wait = 900;
+		$expression = $this->mockExpression($wait);
+		$job = new Job(
+			$expression,
+			"example"
+		);
+
+		$expectedRunDate = new DateTime();
+		$expectedRunDate->add(
+			new DateInterval("PT{$wait}S")
+		);
+		$now = new DateTime();
+		$now->add(new DateInterval("PT150S"));
+
+		self::assertDateTimeEquals(
+			$expectedRunDate,
+			$job->getNextRunDate()
+		);
+	}
+
 	public function assertDateTimeEquals(
 		DateTime $expected,
 		DateTime $actual,
