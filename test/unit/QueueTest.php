@@ -76,4 +76,19 @@ class QueueTest extends TestCase {
 			$queue->runDueJobs()
 		);
 	}
+
+	public function testReset() {
+		$job = self::createMock(Job::class);
+		$job->expects($this->exactly(4))
+			->method("resetRunFlag");
+
+		/** @var Job $job */
+		$queue = new Queue();
+		$queue->add($job);
+		$queue->add($job);
+		$queue->add($job);
+		$queue->add($job);
+
+		$queue->reset();
+	}
 }
