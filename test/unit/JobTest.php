@@ -103,6 +103,17 @@ class JobTest extends TestCase {
 		self::assertTrue($job->hasRun());
 	}
 
+	public function testResetRunFlag() {
+		$job = new Job(
+			$this->mockExpression(),
+			"example"
+		);
+
+		$job->run();
+		$job->resetRunFlag();
+		self::assertFalse($job->hasRun());
+	}
+
 	public function assertDateTimeEquals(
 		DateTime $expected,
 		DateTime $actual,
