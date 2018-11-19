@@ -36,4 +36,21 @@ class QueueTest extends TestCase {
 			$queue->timeOfNextJob()
 		);
 	}
+
+	public function testSecondsUntilNextJob() {
+		$expectedTimeOfNextJob = new DateTime("+5 minutes");
+
+		$job = self::createMock(Job::class);
+		$job->method("getNextRunDate")
+			->willReturn($expectedTimeOfNextJob);
+
+		/** @var Job $job */
+		$queue = new Queue();
+		$queue->add($job);
+
+		self::assertEquals(
+			60 * 5,
+			$queue->secondsUntilNextJob()
+		);
+	}
 }
