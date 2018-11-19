@@ -53,4 +53,27 @@ class QueueTest extends TestCase {
 			$queue->secondsUntilNextJob()
 		);
 	}
+
+	public function testRunDueJobs() {
+		$job = self::createMock(Job::class);
+
+		$job->method("hasRun")
+			->willReturn(false);
+		$job->method("isDue")
+			->willReturn(true);
+
+		$job->expects($this->exactly(3))
+			->method("run");
+
+		/** @var Job $job*/
+		$queue = new Queue();
+		$queue->add($job);
+		$queue->add($job);
+		$queue->add($job);
+
+		self::assertEquals(
+			3,
+			$queue->runDueJobs()
+		);
+	}
 }
