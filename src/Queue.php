@@ -67,7 +67,7 @@ class Queue {
 		return $nextJob;
 	}
 
-	protected function now():DateTime {
+	public function now():DateTime {
 		if(is_null($this->now)) {
 			return new DateTime;
 		}
