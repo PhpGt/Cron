@@ -248,6 +248,23 @@ CRON;
 		self::assertEquals(2, $count);
 	}
 
+	public function testComments() {
+		$cronContents = <<<CRON
+* * * * * ExampleClass::example
+#* * * * * ExampleClass::example
+* * * * * ExampleClass::example
+#* * * * * ExampleClass::example
+# * * * * * ExampleClass::example
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobRepository(0),
+			$this->mockQueueRepository(0),
+			$cronContents
+		);
+		self::assertEquals(2, $runner->run(true));
+	}
+
 	protected function mockJobRepository(int...$wait):JobRepository {
 		$isDue = [];
 		$runDate = [];
