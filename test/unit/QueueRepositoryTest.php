@@ -2,7 +2,6 @@
 namespace Gt\Cron\Test;
 
 use DateTime;
-use Gt\Cron\Queue;
 use Gt\Cron\QueueRepository;
 use PHPUnit\Framework\TestCase;
 
