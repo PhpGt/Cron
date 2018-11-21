@@ -3,8 +3,8 @@ namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cron\Command\ValidateCommand;
+use Gt\Cron\CrontabNotFoundException;
 use Gt\Cron\ParseException;
-use PHPUnit\Framework\TestCase;
 
 class ValidateCommandTest extends CommandTestCase {
 	public function testInvalid() {
@@ -15,10 +15,15 @@ CRON;
 
 		self::expectException(ParseException::class);
 
-		$cd = getcwd();
 		chdir($this->projectDirectory);
 		$command = new ValidateCommand();
 		$command->run(new ArgumentValueList());
-		chdir($cd);
+	}
+
+	public function testNotFound() {
+		self::expectException(CrontabNotFoundException::class);
+		chdir($this->projectDirectory);
+		$command = new ValidateCommand();
+		$command->run(new ArgumentValueList());
 	}
 }
