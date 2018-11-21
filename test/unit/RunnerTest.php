@@ -250,11 +250,11 @@ CRON;
 
 	public function testComments() {
 		$cronContents = <<<CRON
-* * * * * ExampleClass::example
-#* * * * * ExampleClass::example
-* * * * * ExampleClass::example
-#* * * * * ExampleClass::example
-# * * * * * ExampleClass::example
+* * * * * ExampleClass::example1
+#* * * * * ExampleClass::example2
+* * * * * ExampleClass::example3
+#* * * * * ExampleClass::example4
+# * * * * * ExampleClass::example5
 CRON;
 
 		$runner = new Runner(
@@ -262,7 +262,7 @@ CRON;
 			$this->mockQueueRepository(0),
 			$cronContents
 		);
-		self::assertEquals(2, $runner->run(true));
+		self::assertEquals(2, $runner->getNumJobs());
 	}
 
 	protected function mockJobRepository(int...$wait):JobRepository {
