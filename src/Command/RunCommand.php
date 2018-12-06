@@ -54,7 +54,7 @@ class RunCommand extends Command {
 			$message .= ". Waiting...";
 		}
 
-		$this->stream->writeLine(
+		$this->output->writeLine(
 			ucfirst($message)
 		);
 	}

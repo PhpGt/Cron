@@ -20,13 +20,13 @@ class ValidateCommand extends Command {
 			);
 		}
 		catch(CronException $exception) {
-			$this->stream->writeLine(
+			$this->output->writeLine(
 				$exception->getMessage(),
 				Stream::ERROR
 			);
 			exit(1);
 		}
 
-		$this->stream->writeLine("OK");
+		$this->output->writeLine("OK");
 	}
 }
