@@ -35,4 +35,15 @@ CRON;
 
 		self::assertStreamError("crontab file not found at", $stream);
 	}
+
+	public function testRun() {
+		chdir($this->projectDirectory);
+		$this->writeCronContents("* * * * * Example::test");
+
+		$stream = $this->getStream();
+		$command = new ValidateCommand($stream);
+		$command->run(new ArgumentValueList());
+
+		self::assertStreamOutput("OK", $stream);
+	}
 }

@@ -65,6 +65,16 @@ class CommandTestCase extends TestCase {
 		return $stream;
 	}
 
+	protected static function assertStreamOutput(
+		string $message,
+		Stream $stream
+	) {
+		$errorStream = $stream->getOutStream();
+		$errorStream->rewind();
+		$contents = $errorStream->fgets();
+		self::assertStringContainsString($message, $contents);
+	}
+
 	protected static function assertStreamError(
 		string $message,
 		Stream $stream
