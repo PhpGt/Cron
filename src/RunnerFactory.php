@@ -17,6 +17,7 @@ class RunnerFactory {
 		$jobFactory = new JobRepository();
 		return new Runner(
 			$jobFactory,
+			new QueueRepository(),
 			file_get_contents($crontabPath)
 		);
 	}

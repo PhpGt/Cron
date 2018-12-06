@@ -12,6 +12,8 @@ class Runner {
 	protected $queue;
 	/** @var callable */
 	protected $runCallback;
+	/** @var int */
+	protected $numJobs;
 
 	public function __construct(
 		JobRepository $jobRepository,
@@ -28,6 +30,8 @@ class Runner {
 			[&$now]
 		);
 
+		$this->numJobs = 0;
+
 		foreach(explode("\n", $contents) as $line) {
 			$line = trim($line);
 			if(strlen($line) === 0) {
@@ -43,8 +47,15 @@ class Runner {
 			$crontab = $matches["crontab"] ?? null;
 			$command = $matches["command"] ?? null;
 
+			$crontab = trim($crontab);
+			$command = trim($command);
+
+			if(strlen($crontab) > 0
+			&& $crontab[0] === "#") {
+				continue;
+			}
+
 			try {
-// TODO: This is a concern for unit tests... calling a static method is impossible to test.
 				$job = call_user_func(
 					[$jobRepository, "create"],
 					CronExpression::factory($crontab),
@@ -55,7 +66,13 @@ class Runner {
 			catch(InvalidArgumentException $exception) {
 				throw new ParseException("Error parsing cron: $line");
 			}
+
+			$this->numJobs++;
 		}
+	}
+
+	public function getNumJobs():int {
+		return $this->numJobs;
 	}
 
 	public function setRunCallback(callable $callback):void {

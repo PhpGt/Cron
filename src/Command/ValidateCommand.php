@@ -3,8 +3,9 @@ namespace Gt\Cron\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cli\Command\Command;
+use Gt\Cli\Stream;
+use Gt\Cron\CronException;
 use Gt\Cron\RunnerFactory;
-use InvalidArgumentException;
 
 class ValidateCommand extends Command {
 	public function __construct() {
@@ -18,11 +19,14 @@ class ValidateCommand extends Command {
 				getcwd()
 			);
 		}
-		catch(InvalidArgumentException $exception) {
-			echo $exception->getMessage();
+		catch(CronException $exception) {
+			$this->output->writeLine(
+				$exception->getMessage(),
+				Stream::ERROR
+			);
 			exit(1);
 		}
 
-		$this->stream->writeLine("OK");
+		$this->output->writeLine("OK");
 	}
 }
