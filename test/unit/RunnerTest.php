@@ -35,7 +35,7 @@ CRON;
 CRON;
 
 		self::expectException(ParseException::class);
-		self::expectExceptionMessage("Error parsing cron: 15 00 * CronBadExample::notEnoughParts");
+		self::expectExceptionMessage("Invalid syntax: 15 00 * CronBadExample::notEnoughParts");
 		new Runner(
 			$this->mockJobRepository(),
 			$this->mockQueueRepository(),

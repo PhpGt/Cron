@@ -11,7 +11,7 @@ class RunnerFactory {
 		]);
 
 		if(!is_file($crontabPath)) {
-			throw new CrontabNotFoundException($crontabPath);
+			throw new CrontabNotFoundException("crontab file not found at $crontabPath");
 		}
 
 		$jobFactory = new JobRepository();

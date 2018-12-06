@@ -2,6 +2,7 @@
 namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
+use Gt\Cli\Stream;
 use Gt\Cron\Command\ValidateCommand;
 use Gt\Cron\CrontabNotFoundException;
 use Gt\Cron\ParseException;
@@ -13,17 +14,25 @@ class ValidateCommandTest extends CommandTestCase {
 CRON;
 		$this->writeCronContents($cronContents);
 
-		self::expectException(ParseException::class);
+		$stream = $this->getStream();
 
 		chdir($this->projectDirectory);
-		$command = new ValidateCommand();
+		$command = new ValidateCommand($stream);
 		$command->run(new ArgumentValueList());
+
+		self::assertStreamError(
+			"Invalid syntax: * *",
+			$stream
+		);
 	}
 
 	public function testNotFound() {
-		self::expectException(CrontabNotFoundException::class);
 		chdir($this->projectDirectory);
-		$command = new ValidateCommand();
+
+		$stream = $this->getStream();
+		$command = new ValidateCommand($stream);
 		$command->run(new ArgumentValueList());
+
+		self::assertStreamError("crontab file not found at", $stream);
 	}
 }
