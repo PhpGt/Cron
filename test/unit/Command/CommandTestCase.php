@@ -2,6 +2,7 @@
 namespace Gt\Cron\Test\Command;
 
 use DirectoryIterator;
+use Gt\Cli\Stream;
 use PHPUnit\Framework\TestCase;
 
 class CommandTestCase extends TestCase {
@@ -52,5 +53,25 @@ class CommandTestCase extends TestCase {
 			$this->projectDirectory,
 			"crontab"
 		]), $contents);
+	}
+
+	protected function getStream():Stream {
+		$stream = new Stream(
+			"php://memory",
+			"php://memory",
+			"php://memory"
+		);
+
+		return $stream;
+	}
+
+	protected static function assertStreamError(
+		string $message,
+		Stream $stream
+	) {
+		$errorStream = $stream->getErrorStream();
+		$errorStream->rewind();
+		$contents = $errorStream->fgets();
+		self::assertStringContainsString($message, $contents);
 	}
 }

@@ -64,7 +64,7 @@ class Runner {
 				$this->queue->add($job);
 			}
 			catch(InvalidArgumentException $exception) {
-				throw new ParseException("Error parsing cron: $line");
+				throw new ParseException("Invalid syntax: $line");
 			}
 
 			$this->numJobs++;
