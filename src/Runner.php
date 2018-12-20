@@ -81,10 +81,11 @@ class Runner {
 
 	public function run(bool $stop = false):int {
 		$this->stop = $stop;
-		$jobsRan = 0;
 
 		do {
+			$jobsRan = 0;
 			$this->queue->reset();
+
 			$jobsRan += $this->queue->runDueJobs();
 
 			if(is_callable($this->runCallback)) {

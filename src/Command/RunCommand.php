@@ -14,6 +14,10 @@ class RunCommand extends Command {
 		$this->setName("run");
 		$this->setDescription("Start a long-running process to execute each job when it is due");
 		$this->setOutput($output);
+
+		$this->setOptionalParameter(
+			false, "once"
+		);
 	}
 
 	public function run(ArgumentValueList $arguments):void {
@@ -30,8 +34,10 @@ class RunCommand extends Command {
 			return;
 		}
 
+		$once = $arguments->contains("once");
+
 		$runner->setRunCallback([$this, "cronRunStep"]);
-		$runner->run();
+		$runner->run(!$once);
 	}
 
 	public function cronRunStep(
