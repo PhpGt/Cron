@@ -13,9 +13,7 @@ class ValidateCommandTest extends CommandTestCase {
 * * This is wrong syntax
 CRON;
 		$this->writeCronContents($cronContents);
-
 		$stream = $this->getStream();
-
 		chdir($this->projectDirectory);
 		$command = new ValidateCommand($stream);
 		$command->run(new ArgumentValueList());

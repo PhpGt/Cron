@@ -11,8 +11,7 @@ class ValidateCommand extends Command {
 	public function __construct(Stream $output = null) {
 		$this->setName("validate");
 		$this->setDescription("Check the syntax of your crontab file and that the jobs exist");
-
-		parent::__construct($output);
+		$this->setOutput($output);
 	}
 
 	public function run(ArgumentValueList $arguments):void {
