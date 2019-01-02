@@ -12,7 +12,7 @@ class Override {
 		require_once(implode(DIRECTORY_SEPARATOR, [
 			__DIR__,
 			"OverrideFunction",
-			"sleep.php",
+			"$functionName.php",
 		]));
 	}
 

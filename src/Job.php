@@ -92,6 +92,6 @@ class Job {
 	}
 
 	protected function executeScript():void {
-
+		exec($this->command);
 	}
 }

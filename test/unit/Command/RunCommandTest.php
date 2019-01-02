@@ -3,6 +3,7 @@ namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cron\Command\RunCommand;
+use Gt\Cron\Test\Helper\Override;
 use stdClass;
 
 class RunCommandTest extends CommandTestCase {
@@ -22,7 +23,7 @@ CRON;
 		);
 	}
 
-	public function testRunNow() {
+	public function testRunNowFunction() {
 		$cronContents = <<<CRON
 * * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething
 CRON;
@@ -48,7 +49,7 @@ CRON;
 		self::assertStreamOutput("Stopping now", $stream);
 	}
 
-	public function testRunNowWithArguments() {
+	public function testRunNowFunctionWithArguments() {
 		$cronContents = <<<CRON
 * * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething("a test message", 123)
 CRON;
@@ -77,5 +78,66 @@ CRON;
 			123,
 			\Gt\Cron\Test\Helper\ExampleClass::$counter
 		);
+	}
+
+	public function testRunNowFunctionNoSlash() {
+		$cronContents = <<<CRON
+* * * * * Gt\Cron\Test\Helper\ExampleClass::doSomething
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+		$command->run($args);
+		self::assertEquals(
+			1,
+			\Gt\Cron\Test\Helper\ExampleClass::$calls
+		);
+	}
+
+	public function testRunNowScript() {
+		$cronContents = <<<CRON
+* * * * * /path/to/script/doSomething
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$calledCommand = null;
+
+		Override::setCallback(
+			"exec",
+			function($command)use(&$calledCommand) {
+				$calledCommand = $command;
+			}
+		);
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+		$command->run($args);
+		self::assertEquals(
+			"/path/to/script/doSomething",
+			$calledCommand
+		);
+	}
+
+	public function testRunNowScriptWithArguments() {
+		$this->markTestSkipped("TODO");
+	}
+
+	public function testRunNowScriptAndFunction() {
+		$this->markTestSkipped("TODO");
+	}
+
+	public function testRunNowScriptNotExists() {
+		$this->markTestSkipped("TODO");
+	}
+
+	public function testRunNowFunctionNotExists() {
+		$this->markTestSkipped("TODO");
 	}
 }
