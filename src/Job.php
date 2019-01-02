@@ -61,7 +61,7 @@ class Job {
 			"("
 		);
 		if($bracketPos !== false) {
-			$command = substr($command, $bracketPos);
+			$command = substr($command, 0, $bracketPos);
 			$command = trim($command);
 		}
 
@@ -80,7 +80,11 @@ class Job {
 			$argsString = trim($argsString, " ()");
 			$args = str_getcsv($argsString);
 
-			$command = substr($command, $bracketPos);
+			$command = substr(
+				$command,
+				0,
+				$bracketPos
+			);
 			$command = trim($command);
 		}
 

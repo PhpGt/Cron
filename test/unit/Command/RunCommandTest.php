@@ -47,4 +47,35 @@ CRON;
 		self::assertStreamOutput("Just ran 1 job", $stream);
 		self::assertStreamOutput("Stopping now", $stream);
 	}
+
+	public function testRunNowWithArguments() {
+		$cronContents = <<<CRON
+* * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething("a test message", 123)
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+
+		self::assertEquals(
+			"",
+			\Gt\Cron\Test\Helper\ExampleClass::$message
+		);
+		self::assertEquals(
+			0,
+			\Gt\Cron\Test\Helper\ExampleClass::$counter
+		);
+		$command->run($args);
+		self::assertEquals(
+			"a test message",
+			\Gt\Cron\Test\Helper\ExampleClass::$message
+		);
+		self::assertEquals(
+			123,
+			\Gt\Cron\Test\Helper\ExampleClass::$counter
+		);
+	}
 }
