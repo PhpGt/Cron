@@ -35,6 +35,14 @@ class Job {
 	}
 
 	public function run():void {
+		if($this->isFunction()) {
+			$this->executeFunction();
+		}
+		else {
+// Assume the command is a shell command.
+			$this->executeScript();
+		}
+
 		$this->hasRun = true;
 	}
 
@@ -44,5 +52,42 @@ class Job {
 
 	public function resetRunFlag():void {
 		$this->hasRun = false;
+	}
+
+	public function isFunction():bool {
+		$command = $this->command;
+		$bracketPos = strpos(
+			$command,
+			"("
+		);
+		if($bracketPos !== false) {
+			$command = substr($command, $bracketPos);
+			$command = trim($command);
+		}
+
+		return is_callable($command);
+	}
+
+	protected function executeFunction():void {
+		$command = $this->command;
+		$args = [];
+		$bracketPos = strpos($command, "(");
+		if($bracketPos !== false) {
+			$argsString = substr(
+				$command,
+				$bracketPos
+			);
+			$argsString = trim($argsString, " ()");
+			$args = str_getcsv($argsString);
+
+			$command = substr($command, $bracketPos);
+			$command = trim($command);
+		}
+
+		call_user_func_array($command, $args);
+	}
+
+	protected function executeScript():void {
+
 	}
 }

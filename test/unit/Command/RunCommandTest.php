@@ -23,13 +23,8 @@ CRON;
 	}
 
 	public function testRunNow() {
-		$mockBuilder = self::getMockBuilder(StdClass::class);
-		$mockBuilder->setMethods(["doSomething"]);
-		$mock = $mockBuilder->getMock();
-		$mockClass = get_class($mock);
-
 		$cronContents = <<<CRON
-* * * * * $mockClass::doSomething
+* * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething
 CRON;
 		$this->writeCronContents($cronContents);
 		$stream = $this->getStream();
@@ -38,7 +33,16 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand($stream);
+
+		self::assertEquals(
+			0,
+			\Gt\Cron\Test\Helper\ExampleClass::$calls
+		);
 		$command->run($args);
+		self::assertEquals(
+			1,
+			\Gt\Cron\Test\Helper\ExampleClass::$calls
+		);
 
 		self::assertStreamOutput("Just ran 1 job", $stream);
 		self::assertStreamOutput("Stopping now", $stream);
