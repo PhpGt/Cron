@@ -23,6 +23,7 @@ CRON;
 		);
 	}
 
+	/** @runInSeparateProcess  */
 	public function testRunNowFunction() {
 		$cronContents = <<<CRON
 * * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething
@@ -49,6 +50,7 @@ CRON;
 		self::assertStreamOutput("Stopping now", $stream);
 	}
 
+	/** @runInSeparateProcess  */
 	public function testRunNowFunctionWithArguments() {
 		$cronContents = <<<CRON
 * * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething("a test message", 123)
@@ -80,6 +82,7 @@ CRON;
 		);
 	}
 
+	/** @runInSeparateProcess  */
 	public function testRunNowFunctionNoSlash() {
 		$cronContents = <<<CRON
 * * * * * Gt\Cron\Test\Helper\ExampleClass::doSomething
@@ -126,7 +129,30 @@ CRON;
 	}
 
 	public function testRunNowScriptWithArguments() {
-		$this->markTestSkipped("TODO");
+		$cronContents = <<<CRON
+* * * * * /path/to/script/doSomething "a test message" 123
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$calledCommand = null;
+
+		Override::setCallback(
+			"exec",
+			function($command)use(&$calledCommand) {
+				$calledCommand = $command;
+			}
+		);
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+		$command->run($args);
+		self::assertEquals(
+			"/path/to/script/doSomething \"a test message\" 123",
+			$calledCommand
+		);
 	}
 
 	public function testRunNowScriptAndFunction() {
