@@ -77,7 +77,7 @@ class Job {
 				$command,
 				$bracketPos
 			);
-			$argsString = trim($argsString, " ()");
+			$argsString = trim($argsString, " ();");
 			$args = str_getcsv($argsString);
 
 			$command = substr(
