@@ -155,8 +155,37 @@ CRON;
 		);
 	}
 
+	/** @runInSeparateProcess */
 	public function testRunNowScriptAndFunction() {
-		$this->markTestSkipped("TODO");
+		$cronContents = <<<CRON
+* * * * * /path/to/script/doSomething "a test message" 123
+* * * * * Gt\Cron\Test\Helper\ExampleClass::doSomething
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$calledCommand = null;
+
+		Override::setCallback(
+			"exec",
+			function($command)use(&$calledCommand) {
+				$calledCommand = $command;
+			}
+		);
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+		$command->run($args);
+		self::assertEquals(
+			"/path/to/script/doSomething \"a test message\" 123",
+			$calledCommand
+		);
+		self::assertEquals(
+			1,
+			\Gt\Cron\Test\Helper\ExampleClass::$calls
+		);
 	}
 
 	public function testRunNowScriptNotExists() {
