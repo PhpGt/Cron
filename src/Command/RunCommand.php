@@ -7,7 +7,9 @@ use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cli\Command\Command;
 use Gt\Cli\Stream;
 use Gt\Cron\CronException;
+use Gt\Cron\FunctionExecutionException;
 use Gt\Cron\RunnerFactory;
+use Gt\Cron\ScriptExecutionException;
 
 class RunCommand extends Command {
 	public function __construct(Stream $output = null) {
@@ -41,9 +43,16 @@ class RunCommand extends Command {
 		try {
 			$runner->run(!$once);
 		}
-		catch(CronException $exception) {
+		catch(ScriptExecutionException $exception) {
 			$this->output->writeLine(
 				"Error executing command: "
+				. $exception->getMessage(),
+				Stream::ERROR
+			);
+		}
+		catch(FunctionExecutionException $exception) {
+			$this->output->writeLine(
+				"Error executing function: "
 				. $exception->getMessage(),
 				Stream::ERROR
 			);

@@ -89,6 +89,9 @@ class Job {
 			$command = trim($command);
 		}
 
+		if(!is_callable($command)) {
+			throw new FunctionExecutionException($command);
+		}
 		call_user_func_array($command, $args);
 	}
 
