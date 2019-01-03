@@ -208,7 +208,25 @@ CRON;
 		);
 	}
 
-//	public function testRunNowFunctionNotExists() {
-//		$this->markTestSkipped("TODO");
-//	}
+	public function testRunNowFunctionNotExists() {
+		$cronContents = <<<CRON
+* * * * * Gt\Cron\Test\Nothing::thisDoesNotExist
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$calledCommand = null;
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+
+		$command->run($args);
+
+		$this->assertStreamError(
+			"Error executing function: Gt\\Cron\\Test\\Nothing::thisDoesNotExist",
+			$stream
+		);
+	}
 }
