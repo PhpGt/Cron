@@ -4,6 +4,7 @@ namespace Gt\Cron\Test;
 use Cron\CronExpression;
 use DateInterval;
 use DateTime;
+use Gt\Cron\CronException;
 use Gt\Cron\Job;
 use PHPUnit\Framework\TestCase;
 
@@ -99,7 +100,11 @@ class JobTest extends TestCase {
 		);
 
 		self::assertFalse($job->hasRun());
-		$job->run();
+		try {
+			$job->run();
+		}
+		catch(CronException $exception) {}
+
 		self::assertTrue($job->hasRun());
 	}
 
@@ -109,7 +114,10 @@ class JobTest extends TestCase {
 			"example"
 		);
 
-		$job->run();
+		try {
+			$job->run();
+		}
+		catch(CronException $exception) {}
 		$job->resetRunFlag();
 		self::assertFalse($job->hasRun());
 	}
@@ -143,7 +151,7 @@ class JobTest extends TestCase {
 		$expression->method("isDue")
 			->willReturnOnConsecutiveCalls(...$isDue);
 		$expression->method("getNextRunDate")
-			->willReturnCallback(function(DateTime $now)
+			->willReturnCallback(function()
 			use(&$runDateCallbackCount, $runDate) {
 				$value = $runDate[$runDateCallbackCount];
 				$runDateCallbackCount++;

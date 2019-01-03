@@ -3,9 +3,11 @@ namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cron\Command\RunCommand;
+use Gt\Cron\CronException;
 use Gt\Cron\Test\Helper\Override;
 use stdClass;
 
+/** @runTestsInSeparateProcesses  */
 class RunCommandTest extends CommandTestCase {
 	public function testRunInvalidSyntax() {
 		$cronContents = <<<CRON
@@ -23,7 +25,6 @@ CRON;
 		);
 	}
 
-	/** @runInSeparateProcess  */
 	public function testRunNowFunction() {
 		$cronContents = <<<CRON
 * * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething
@@ -50,7 +51,6 @@ CRON;
 		self::assertStreamOutput("Stopping now", $stream);
 	}
 
-	/** @runInSeparateProcess  */
 	public function testRunNowFunctionWithArguments() {
 		$cronContents = <<<CRON
 * * * * * \Gt\Cron\Test\Helper\ExampleClass::doSomething("a test message", 123)
@@ -82,7 +82,6 @@ CRON;
 		);
 	}
 
-	/** @runInSeparateProcess  */
 	public function testRunNowFunctionNoSlash() {
 		$cronContents = <<<CRON
 * * * * * Gt\Cron\Test\Helper\ExampleClass::doSomething
@@ -112,7 +111,7 @@ CRON;
 		$calledCommand = null;
 
 		Override::setCallback(
-			"exec",
+			"proc_open",
 			function($command)use(&$calledCommand) {
 				$calledCommand = $command;
 			}
@@ -139,7 +138,7 @@ CRON;
 		$calledCommand = null;
 
 		Override::setCallback(
-			"exec",
+			"proc_open",
 			function($command)use(&$calledCommand) {
 				$calledCommand = $command;
 			}
@@ -155,7 +154,6 @@ CRON;
 		);
 	}
 
-	/** @runInSeparateProcess */
 	public function testRunNowScriptAndFunction() {
 		$cronContents = <<<CRON
 * * * * * /path/to/script/doSomething "a test message" 123
@@ -168,7 +166,7 @@ CRON;
 		$calledCommand = null;
 
 		Override::setCallback(
-			"exec",
+			"proc_open",
 			function($command)use(&$calledCommand) {
 				$calledCommand = $command;
 			}
@@ -189,10 +187,28 @@ CRON;
 	}
 
 	public function testRunNowScriptNotExists() {
-		$this->markTestSkipped("TODO");
+		$cronContents = <<<CRON
+* * * * * /path/to/script/that/does/not/exist
+CRON;
+		$this->writeCronContents($cronContents);
+		$stream = $this->getStream();
+		chdir($this->projectDirectory);
+
+		$calledCommand = null;
+
+		$args = new ArgumentValueList();
+		$args->set("once");
+		$command = new RunCommand($stream);
+
+		$command->run($args);
+
+		$this->assertStreamError(
+			"Error executing command: /path/to/script/that/does/not/exist",
+			$stream
+		);
 	}
 
-	public function testRunNowFunctionNotExists() {
-		$this->markTestSkipped("TODO");
-	}
+//	public function testRunNowFunctionNotExists() {
+//		$this->markTestSkipped("TODO");
+//	}
 }

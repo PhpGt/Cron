@@ -37,7 +37,17 @@ class RunCommand extends Command {
 		$once = $arguments->contains("once");
 
 		$runner->setRunCallback([$this, "cronRunStep"]);
-		$runner->run(!$once);
+
+		try {
+			$runner->run(!$once);
+		}
+		catch(CronException $exception) {
+			$this->output->writeLine(
+				"Error executing command: "
+				. $exception->getMessage(),
+				Stream::ERROR
+			);
+		}
 	}
 
 	public function cronRunStep(

@@ -35,6 +35,8 @@ class Job {
 	}
 
 	public function run():void {
+		$this->hasRun = true;
+
 		if($this->isFunction()) {
 			$this->executeFunction();
 		}
@@ -42,8 +44,6 @@ class Job {
 // Assume the command is a shell command.
 			$this->executeScript();
 		}
-
-		$this->hasRun = true;
 	}
 
 	public function hasRun():bool {
@@ -65,7 +65,8 @@ class Job {
 			$command = trim($command);
 		}
 
-		return is_callable($command);
+		return strstr($command, "::")
+			|| is_callable($command);
 	}
 
 	protected function executeFunction():void {
@@ -92,6 +93,39 @@ class Job {
 	}
 
 	protected function executeScript():void {
-		exec($this->command);
+		$descriptor = [
+			0 => ["pipe", "r"],
+			1 => ["pipe", "w"],
+			2 => ["pipe", "w"],
+		];
+		$pipes = [];
+
+		$proc = proc_open(
+			$this->command,
+			$descriptor,
+			$pipes
+		);
+
+		do {
+			if($proc) {
+				$status = proc_get_status($proc);
+			}
+			else {
+				$status = [
+					"running" => false,
+					"exitcode" => -1,
+				];
+			}
+		}while($status["running"]);
+
+		if($status["exitcode"] > 0) {
+			throw new ScriptExecutionException(
+				$this->command
+			);
+		}
+
+		if($proc) {
+			proc_close($proc);
+		}
 	}
 }
