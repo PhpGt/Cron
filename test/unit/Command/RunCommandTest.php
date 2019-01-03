@@ -3,9 +3,7 @@ namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cron\Command\RunCommand;
-use Gt\Cron\CronException;
 use Gt\Cron\Test\Helper\Override;
-use stdClass;
 
 /** @runTestsInSeparateProcesses  */
 class RunCommandTest extends CommandTestCase {

@@ -2,10 +2,7 @@
 namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
-use Gt\Cli\Stream;
 use Gt\Cron\Command\ValidateCommand;
-use Gt\Cron\CrontabNotFoundException;
-use Gt\Cron\ParseException;
 
 class ValidateCommandTest extends CommandTestCase {
 	public function testInvalid() {
