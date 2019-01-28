@@ -1,12 +1,11 @@
 {
 	"name": "phpgt/cron",
 	"description": "Run scripts or static functions at regular intervals.",
-	"minimum-stability": "dev",
 
 	"require": {
-		"php": ">7.1",
+		"php": ">7.2",
 		"dragonmantank/cron-expression": "^2.2",
-		"phpgt/cli": "dev-master"
+		"phpgt/cli": "1.*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "7.*"
