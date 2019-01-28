@@ -14,7 +14,7 @@ class ValidateCommand extends Command {
 		$this->setOutput($output);
 	}
 
-	public function run(ArgumentValueList $arguments):void {
+	public function run(ArgumentValueList $arguments = null):void {
 		try {
 			$runner = RunnerFactory::createForProject(
 				getcwd()
