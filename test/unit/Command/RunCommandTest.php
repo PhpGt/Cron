@@ -114,6 +114,8 @@ CRON;
 				$calledCommand = $command;
 			}
 		);
+		Override::load("proc_get_status");
+		Override::load("proc_close");
 
 		$args = new ArgumentValueList();
 		$args->set("once");
@@ -141,6 +143,8 @@ CRON;
 				$calledCommand = $command;
 			}
 		);
+		Override::load("proc_get_status");
+		Override::load("proc_close");
 
 		$args = new ArgumentValueList();
 		$args->set("once");
@@ -169,6 +173,8 @@ CRON;
 				$calledCommand = $command;
 			}
 		);
+		Override::load("proc_get_status");
+		Override::load("proc_close");
 
 		$args = new ArgumentValueList();
 		$args->set("once");

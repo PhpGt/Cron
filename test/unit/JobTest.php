@@ -6,6 +6,8 @@ use DateInterval;
 use DateTime;
 use Gt\Cron\CronException;
 use Gt\Cron\Job;
+use Gt\Cron\ScriptExecutionException;
+use Gt\Cron\Test\Helper\Override;
 use PHPUnit\Framework\TestCase;
 
 class JobTest extends TestCase {
@@ -120,6 +122,56 @@ class JobTest extends TestCase {
 		catch(CronException $exception) {}
 		$job->resetRunFlag();
 		self::assertFalse($job->hasRun());
+	}
+
+	/** @runInSeparateProcess */
+	public function testRunScriptClosesProc() {
+		$job = new Job(
+			$this->mockExpression(),
+			"example"
+		);
+
+		$procCalls = [
+			"proc_open" => [],
+			"proc_close" => [],
+		];
+		Override::setCallback("proc_open", function($command)use(&$procCalls) {
+			$procCalls["proc_open"] []= $command;
+			return "EXAMPLE_PROCESS";
+		});
+		Override::load("proc_get_status");
+		Override::setCallback("proc_close", function()use(&$procCalls) {
+			$procCalls["proc_close"] []= time();
+		});
+
+		$job->run();
+		self::assertCount(1, $procCalls["proc_open"]);
+		self::assertCount(1, $procCalls["proc_close"]);
+	}
+
+	public function testRunScriptFail() {
+		$job = new Job(
+			$this->mockExpression(),
+			"example"
+		);
+
+		$procCalls = [
+			"proc_open" => [],
+			"proc_close" => [],
+		];
+		Override::setCallback("proc_open", function($command)use(&$procCalls) {
+			$procCalls["proc_open"] []= $command;
+			return null;
+		});
+		Override::load("proc_get_status");
+		Override::setCallback("proc_close", function()use(&$procCalls) {
+			$procCalls["proc_close"] []= time();
+		});
+
+		self::expectException(ScriptExecutionException::class);
+		$job->run();
+		self::assertCount(1, $procCalls["proc_open"]);
+		self::assertCount(0, $procCalls["proc_close"]);
 	}
 
 	public static function assertDateTimeEquals(

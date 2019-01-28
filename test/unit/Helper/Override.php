@@ -9,24 +9,28 @@ class Override {
 		callable $callback
 	):void {
 		self::$callbackMap[$functionName] = $callback;
-		require_once(implode(DIRECTORY_SEPARATOR, [
-			__DIR__,
-			"OverrideFunction",
-			"$functionName.php",
-		]));
+		self::load($functionName);
 	}
 
 	public static function call(
 		string $functionName,
 		array $arguments = []
-	):void {
+	) {
 		if(!isset(self::$callbackMap[$functionName])) {
-			return;
+			return null;
 		}
 
-		call_user_func_array(
+		return call_user_func_array(
 			self::$callbackMap[$functionName],
 			$arguments
 		);
+	}
+
+	public static function load(string $functionName) {
+		require_once(implode(DIRECTORY_SEPARATOR, [
+			__DIR__,
+			"OverrideFunction",
+			"$functionName.php",
+		]));
 	}
 }
