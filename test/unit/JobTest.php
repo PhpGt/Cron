@@ -122,7 +122,7 @@ class JobTest extends TestCase {
 		self::assertFalse($job->hasRun());
 	}
 
-	public function assertDateTimeEquals(
+	public static function assertDateTimeEquals(
 		DateTime $expected,
 		DateTime $actual,
 		string $message = ""
