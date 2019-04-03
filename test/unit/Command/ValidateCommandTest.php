@@ -12,7 +12,8 @@ CRON;
 		$this->writeCronContents($cronContents);
 		$stream = $this->getStream();
 		chdir($this->projectDirectory);
-		$command = new ValidateCommand($stream);
+		$command = new ValidateCommand();
+		$command->setOutput($stream);
 		$command->run(new ArgumentValueList());
 
 		self::assertStreamError(
@@ -25,7 +26,8 @@ CRON;
 		chdir($this->projectDirectory);
 
 		$stream = $this->getStream();
-		$command = new ValidateCommand($stream);
+		$command = new ValidateCommand();
+		$command->setOutput($stream);
 		$command->run(new ArgumentValueList());
 
 		self::assertStreamError("crontab file not found at", $stream);
@@ -36,7 +38,8 @@ CRON;
 		$this->writeCronContents("* * * * * Example::test");
 
 		$stream = $this->getStream();
-		$command = new ValidateCommand($stream);
+		$command = new ValidateCommand();
+		$command->setOutput($stream);
 		$command->run(new ArgumentValueList());
 
 		self::assertStreamOutput("OK", $stream);
