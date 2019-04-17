@@ -7,21 +7,9 @@ use Gt\Cron\Command\RunCommand;
 use Gt\Cron\Command\ValidateCommand;
 
 $autoloadLocations = [
-	implode(DIRECTORY_SEPARATOR, [
-		__DIR__,
-		"..",
-		"..",
-		"..",
-		"autoload.php",
-	]),
-	implode(DIRECTORY_SEPARATOR, [
-		__DIR__,
-		"..",
-		"vendor",
-		"autoload.php",
-	]),
+	__DIR__ . "/../../../autoload.php",
+	__DIR__ . "/../vendor/autoload.php",
 ];
-
 foreach($autoloadLocations as $location) {
 	if(file_exists($location)) {
 		require($location);
@@ -30,7 +18,7 @@ foreach($autoloadLocations as $location) {
 }
 
 $app = new Application(
-	"PHP.Gt Cron",
+	"Time-based job scheduler",
 	new ArgumentList(...$argv),
 	new RunCommand(),
 	new ValidateCommand()
