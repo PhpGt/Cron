@@ -3,6 +3,7 @@ namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cron\Command\RunCommand;
+use Gt\Cron\Test\Helper\ExampleClass;
 use Gt\Cron\Test\Helper\Override;
 
 /** @runTestsInSeparateProcesses  */
@@ -14,7 +15,8 @@ CRON;
 		$this->writeCronContents($cronContents);
 		$stream = $this->getStream();
 		chdir($this->projectDirectory);
-		$command  = new RunCommand($stream);
+		$command  = new RunCommand();
+		$command->setOutput($stream);
 		$command->run(new ArgumentValueList());
 
 		self::assertStreamError(
@@ -33,16 +35,17 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 
 		self::assertEquals(
 			0,
-			\Gt\Cron\Test\Helper\ExampleClass::$calls
+			ExampleClass::$calls
 		);
 		$command->run($args);
 		self::assertEquals(
 			1,
-			\Gt\Cron\Test\Helper\ExampleClass::$calls
+			ExampleClass::$calls
 		);
 
 		self::assertStreamOutput("Just ran 1 job", $stream);
@@ -59,7 +62,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 
 		self::assertEquals(
 			"",
@@ -90,7 +94,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 		$command->run($args);
 		self::assertEquals(
 			1,
@@ -119,7 +124,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 		$command->run($args);
 		self::assertEquals(
 			"/path/to/script/doSomething",
@@ -148,7 +154,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 		$command->run($args);
 		self::assertEquals(
 			"/path/to/script/doSomething \"a test message\" 123",
@@ -178,7 +185,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 		$command->run($args);
 		self::assertEquals(
 			"/path/to/script/doSomething \"a test message\" 123",
@@ -202,7 +210,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 
 		$command->run($args);
 
@@ -224,7 +233,8 @@ CRON;
 
 		$args = new ArgumentValueList();
 		$args->set("once");
-		$command = new RunCommand($stream);
+		$command = new RunCommand();
+		$command->setOutput($stream);
 
 		$command->run($args);
 
