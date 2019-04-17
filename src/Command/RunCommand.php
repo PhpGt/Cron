@@ -1,10 +1,11 @@
 <?php
-
 namespace Gt\Cron\Command;
 
 use DateTime;
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cli\Command\Command;
+use Gt\Cli\Parameter\NamedParameter;
+use Gt\Cli\Parameter\Parameter;
 use Gt\Cli\Stream;
 use Gt\Cron\CronException;
 use Gt\Cron\FunctionExecutionException;
@@ -12,20 +13,11 @@ use Gt\Cron\RunnerFactory;
 use Gt\Cron\ScriptExecutionException;
 
 class RunCommand extends Command {
-	public function __construct(Stream $output = null) {
-		$this->setName("run");
-		$this->setDescription("Start a long-running process to execute each job when it is due");
-		$this->setOutput($output);
-
-		$this->setOptionalParameter(
-			false, "once"
-		);
-	}
-
 	public function run(ArgumentValueList $arguments = null):void {
 		try {
 			$runner = RunnerFactory::createForProject(
-				getcwd()
+				getcwd(),
+				$arguments->get("file", "crontab")
 			);
 		}
 		catch(CronException $exception) {
@@ -95,5 +87,42 @@ class RunCommand extends Command {
 		$this->output->writeLine(
 			ucfirst($message)
 		);
+	}
+
+	public function getName():string {
+		return "run";
+	}
+
+	public function getDescription():string {
+		return "Start a long-running process to execute each job when it is due";
+	}
+
+	/** @return  NamedParameter[] */
+	public function getRequiredNamedParameterList():array {
+		return [];
+	}
+
+	/** @return  NamedParameter[] */
+	public function getOptionalNamedParameterList():array {
+		return [
+			new NamedParameter("file"),
+		];
+	}
+
+	/** @return  Parameter[] */
+	public function getRequiredParameterList():array {
+		return[];
+	}
+
+	/** @return  Parameter[] */
+	public function getOptionalParameterList():array {
+		return [
+			new Parameter(
+				false,
+				"once",
+				null,
+				"Pass this flag to only run commands that are due at the time of running. Without this flag, cron will continue to run forever, executing tasks when they become ready."
+			),
+		];
 	}
 }

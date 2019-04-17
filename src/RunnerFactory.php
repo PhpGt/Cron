@@ -3,11 +3,12 @@ namespace Gt\Cron;
 
 class RunnerFactory {
 	public static function createForProject(
-		string $projectDirectory
+		string $projectDirectory,
+		string $fileName = "crontab"
 	):Runner {
 		$crontabPath = implode(DIRECTORY_SEPARATOR, [
 			$projectDirectory,
-			"crontab",
+			$fileName,
 		]);
 
 		if(!is_file($crontabPath)) {
