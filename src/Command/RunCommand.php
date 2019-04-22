@@ -28,12 +28,10 @@ class RunCommand extends Command {
 			return;
 		}
 
-		$once = $arguments->contains("once");
-
 		$runner->setRunCallback([$this, "cronRunStep"]);
 
 		try {
-			$runner->run(!$once);
+			$runner->run($arguments->contains("watch"));
 		}
 		catch(ScriptExecutionException $exception) {
 			$this->output->writeLine(
@@ -54,7 +52,7 @@ class RunCommand extends Command {
 	public function cronRunStep(
 		int $jobsRan,
 		DateTime $wait,
-		bool $stop
+		bool $continue
 	) {
 		$message = "";
 		$now = new DateTime();
@@ -77,11 +75,11 @@ class RunCommand extends Command {
 			$message .= " " . $wait->format("Y");
 		}
 
-		if($stop) {
-			$message .= ". Stopping now.";
+		if($continue) {
+			$message .= ". Waiting...";
 		}
 		else {
-			$message .= ". Waiting...";
+			$message .= ". Stopping now.";
 		}
 
 		$this->output->writeLine(

@@ -7,7 +7,7 @@ use InvalidArgumentException;
 
 class Runner {
 	/** @var bool */
-	public $stop;
+	public $continue;
 	/** @var Queue */
 	protected $queue;
 	/** @var callable */
@@ -79,8 +79,8 @@ class Runner {
 		$this->runCallback = $callback;
 	}
 
-	public function run(bool $stop = false):int {
-		$this->stop = $stop;
+	public function run(bool $continue = false):int {
+		$this->continue = $continue;
 
 		do {
 			$jobsRan = 0;
@@ -93,15 +93,15 @@ class Runner {
 					$this->runCallback,
 					$jobsRan,
 					$this->queue->timeOfNextJob(),
-					$stop
+					$continue
 				);
 			}
 
-			if(!$this->stop) {
+			if($this->continue) {
 				sleep($this->queue->secondsUntilNextJob());
 			}
 		}
-		while(!$this->stop);
+		while($this->continue);
 
 		return $jobsRan;
 	}
