@@ -2,9 +2,8 @@
 <?php
 
 use Gt\Cli\Application;
-use Gt\Cli\Argument\ArgumentList;
+use Gt\Cli\Argument\CommandArgumentList;
 use Gt\Cron\Command\RunCommand;
-use Gt\Cron\Command\ValidateCommand;
 
 $autoloadLocations = [
 	__DIR__ . "/../../../autoload.php",
@@ -19,8 +18,7 @@ foreach($autoloadLocations as $location) {
 
 $app = new Application(
 	"Time-based job scheduler",
-	new ArgumentList(...$argv),
-	new RunCommand(),
-	new ValidateCommand()
+	new CommandArgumentList("run", ...$argv),
+	new RunCommand()
 );
 $app->run();
