@@ -67,7 +67,7 @@ CRON;
 		);
 		self::assertEquals(
 			1,
-			$runner->run(true)
+			$runner->run()
 		);
 	}
 
@@ -99,7 +99,7 @@ CRON;
 		);
 		self::assertEquals(
 			2,
-			$runner->run(true)
+			$runner->run()
 		);
 	}
 
@@ -130,10 +130,10 @@ CRON;
 			"sleep",
 		function($seconds) use(&$secondsUntilNextJob, $runner) {
 			$secondsUntilNextJob = $seconds;
-			$runner->stop = true;
+			$runner->continue = false;
 		});
 
-		$runner->run();
+		$runner->run(true);
 		self::assertEquals(600, $secondsUntilNextJob);
 	}
 
@@ -163,10 +163,10 @@ CRON;
 			"sleep",
 			function($seconds) use(&$secondsUntilNextJob, $runner) {
 				$secondsUntilNextJob = $seconds;
-				$runner->stop = true;
+				$runner->continue = false;
 			});
 
-		$runner->run();
+		$runner->run(true);
 		self::assertEquals(300, $secondsUntilNextJob);
 	}
 
@@ -190,7 +190,7 @@ CRON;
 
 		self::assertEquals(
 			3,
-			$runner->run(true)
+			$runner->run()
 		);
 	}
 
@@ -217,7 +217,7 @@ CRON;
 
 		self::assertEquals(
 			3,
-			$runner->run(true)
+			$runner->run()
 		);
 	}
 
@@ -242,9 +242,9 @@ CRON;
 		});
 
 		self::assertEquals(0, $count);
-		$runner->run(true);
+		$runner->run();
 		self::assertEquals(1, $count);
-		$runner->run(true);
+		$runner->run();
 		self::assertEquals(2, $count);
 	}
 
