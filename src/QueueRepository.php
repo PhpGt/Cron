@@ -10,7 +10,7 @@ class QueueRepository {
 		$this->className = $className;
 	}
 
-	public function createAtTime(DateTime &$now):Queue {
+	public function createAtTime(DateTime $now):Queue {
 		return new $this->className($now);
 	}
 }

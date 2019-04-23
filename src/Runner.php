@@ -19,15 +19,11 @@ class Runner {
 		JobRepository $jobRepository,
 		QueueRepository $queueRepository,
 		string $contents,
-		DateTime &$now = null
+		DateTime $now = null
 	) {
-		if(is_null($now)) {
-			$now = new DateTime();
-		}
-
-		$this->queue = call_user_func_array(
+		$this->queue = call_user_func(
 			[$queueRepository, "createAtTime"],
-			[&$now]
+			$now ?? new DateTime()
 		);
 
 		$this->numJobs = 0;
@@ -89,6 +85,8 @@ class Runner {
 			$jobsRan += $this->queue->runDueJobs();
 
 			if(is_callable($this->runCallback)) {
+				$this->queue->now(new DateTime());
+
 				call_user_func(
 					$this->runCallback,
 					$jobsRan,
