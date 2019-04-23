@@ -25,8 +25,13 @@ class Queue {
 		return $then->getTimestamp() - $now->getTimestamp();
 	}
 
-	public function timeOfNextJob():DateTime {
+	public function timeOfNextJob():?DateTime {
 		$nextJob = $this->getNextJob();
+
+		if(!$nextJob) {
+			return null;
+		}
+
 		$now = $this->now();
 		return $nextJob->getNextRunDate($now);
 	}

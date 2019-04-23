@@ -62,11 +62,16 @@ class RunCommand extends Command {
 
 	public function cronRunStep(
 		int $jobsRan,
-		DateTime $wait,
+		?DateTime $wait,
 		bool $continue
 	) {
 		$message = "";
 		$now = new DateTime();
+
+		if(is_null($wait)) {
+			$this->writeLine("No tasks in crontab.");
+			exit(0);
+		}
 
 		$jobPlural = "job";
 		if($jobsRan !== 1) {
@@ -76,6 +81,7 @@ class RunCommand extends Command {
 		if($jobsRan > 0) {
 			$message = "Just ran $jobsRan $jobPlural, ";
 		}
+
 
 		$message .= "next job at: " . $wait->format("H:i:s");
 
