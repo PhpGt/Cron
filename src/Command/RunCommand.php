@@ -14,10 +14,16 @@ use Gt\Cron\ScriptExecutionException;
 
 class RunCommand extends Command {
 	public function run(ArgumentValueList $arguments = null):void {
+		$filename = $arguments->get("file", "crontab");
+		$filePath = implode(DIRECTORY_SEPARATOR, [
+			getcwd(),
+			$filename,
+		]);
+
 		try {
 			$runner = RunnerFactory::createForProject(
 				getcwd(),
-				$arguments->get("file", "crontab")
+				$filename
 			);
 		}
 		catch(CronException $exception) {
@@ -26,6 +32,11 @@ class RunCommand extends Command {
 				Stream::ERROR
 			);
 			return;
+		}
+
+		if($arguments->contains("validate")) {
+			$this->writeLine("Syntax OK at $filePath");
+			exit(0);
 		}
 
 		$runner->setRunCallback([$this, "cronRunStep"]);
@@ -117,9 +128,15 @@ class RunCommand extends Command {
 		return [
 			new Parameter(
 				false,
-				"once",
+				"watch",
+				"w",
+				"Pass this flag to continue running cron commands as they become due. Without this flag, cron will only run the commands that are due at the point of executing the command."
+			),
+			new Parameter(
+				false,
+				"validate",
 				null,
-				"Pass this flag to only run commands that are due at the time of running. Without this flag, cron will continue to run forever, executing tasks when they become ready."
+				"Check the syntax of the crontab file without running anything."
 			),
 		];
 	}
