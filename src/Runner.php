@@ -103,4 +103,8 @@ class Runner {
 
 		return $jobsRan;
 	}
+
+	public function runAll():int {
+		return $this->queue->runAllJobs();
+	}
 }

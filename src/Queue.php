@@ -50,6 +50,17 @@ class Queue {
 		return $jobsRan;
 	}
 
+	public function runAllJobs():int {
+		$jobsRan = 0;
+
+		foreach($this->jobList as $job) {
+			$job->run();
+			$jobsRan++;
+		}
+
+		return $jobsRan;
+	}
+
 	public function reset():void {
 		foreach($this->jobList as $job) {
 			$job->resetRunFlag();

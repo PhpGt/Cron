@@ -89,10 +89,12 @@ class Job {
 			$command = trim($command);
 		}
 
-		if(!is_callable($command)) {
+		$callable = explode("::", $command);
+
+		if(!is_callable($callable)) {
 			throw new FunctionExecutionException($command);
 		}
-		call_user_func_array($command, $args);
+		call_user_func_array($callable, $args);
 	}
 
 	protected function executeScript():void {

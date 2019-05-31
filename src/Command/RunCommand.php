@@ -41,6 +41,11 @@ class RunCommand extends Command {
 
 		$runner->setRunCallback([$this, "cronRunStep"]);
 
+		if($arguments->contains("now")) {
+			$numRunJobs = $runner->runAll();
+			$this->output->writeLine("Ran $numRunJobs jobs now.");
+		}
+
 		try {
 			$runner->run($arguments->contains("watch"));
 		}
@@ -144,6 +149,12 @@ class RunCommand extends Command {
 				null,
 				"Check the syntax of the crontab file without running anything."
 			),
+			new Parameter(
+				true,
+				"now",
+				"n",
+				"Run all tasks once now. Useful when using --watch for when developing locally."
+			)
 		];
 	}
 }

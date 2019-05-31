@@ -6,6 +6,7 @@ use Gt\Cli\Argument\CommandArgumentList;
 use Gt\Cron\Command\RunCommand;
 
 $autoloadLocations = [
+	getcwd() . "/vendor/autoload.php",
 	__DIR__ . "/../../../autoload.php",
 	__DIR__ . "/../vendor/autoload.php",
 ];
