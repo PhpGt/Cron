@@ -36,15 +36,26 @@ class Queue {
 		return $nextJob->getNextRunDate($now);
 	}
 
-	public function runDueJobs():int {
-		$jobsRan = 0;
+	/** string[] */
+	public function getDueJobs():array {
+		$dueJobs = [];
 
 		foreach($this->jobList as $job) {
 			if(!$job->hasRun()
 			&& $job->isDue($this->now())) {
-				$job->run();
-				$jobsRan++;
+				$dueJobs []= $job;
 			}
+		}
+
+		return $dueJobs;
+	}
+
+	public function runDueJobs():int {
+		$jobsRan = 0;
+
+		foreach($this->getDueJobs() as $job) {
+			$job->run();
+			$jobsRan++;
 		}
 
 		return $jobsRan;

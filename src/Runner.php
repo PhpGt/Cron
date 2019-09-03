@@ -77,19 +77,20 @@ class Runner {
 
 	public function run(bool $continue = false):int {
 		$this->continue = $continue;
+		$numJobsRan = 0;
 
 		do {
-			$jobsRan = 0;
 			$this->queue->reset();
 
-			$jobsRan += $this->queue->runDueJobs();
+			$jobsDue = $this->queue->getDueJobs();
+			$numJobsRan += $this->queue->runDueJobs();
 
 			if(is_callable($this->runCallback)) {
 				$this->queue->now(new DateTime());
 
 				call_user_func(
 					$this->runCallback,
-					$jobsRan,
+					$jobsDue,
 					$this->queue->timeOfNextJob(),
 					$continue
 				);
@@ -101,7 +102,7 @@ class Runner {
 		}
 		while($this->continue);
 
-		return $jobsRan;
+		return $numJobsRan;
 	}
 
 	public function runAll():int {

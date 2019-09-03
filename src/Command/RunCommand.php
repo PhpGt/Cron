@@ -9,6 +9,7 @@ use Gt\Cli\Parameter\Parameter;
 use Gt\Cli\Stream;
 use Gt\Cron\CronException;
 use Gt\Cron\FunctionExecutionException;
+use Gt\Cron\Job;
 use Gt\Cron\RunnerFactory;
 use Gt\Cron\ScriptExecutionException;
 
@@ -42,8 +43,12 @@ class RunCommand extends Command {
 		$runner->setRunCallback([$this, "cronRunStep"]);
 
 		if($arguments->contains("now")) {
+			$dueJobs = $runner->getJobsDue();
 			$numRunJobs = $runner->runAll();
-			$this->output->writeLine("Ran $numRunJobs jobs now.");
+			foreach($dueJobs as $job) {
+				$this->output->writeLine($job->getSomething());
+			}
+			$this->output->writeLine("Just ran $numRunJobs jobs now.");
 		}
 
 		try {
@@ -66,7 +71,7 @@ class RunCommand extends Command {
 	}
 
 	public function cronRunStep(
-		int $jobsRan,
+		array $jobsRan,
 		?DateTime $wait,
 		bool $continue
 	) {
@@ -79,14 +84,19 @@ class RunCommand extends Command {
 		}
 
 		$jobPlural = "job";
-		if($jobsRan !== 1) {
+		$numJobsRan = count($jobsRan);
+		if($numJobsRan !== 1) {
 			$jobPlural .= "s";
 		}
 
-		if($jobsRan > 0) {
-			$message = "Just ran $jobsRan $jobPlural, ";
+		/** @var Job[] $jobsRan */
+		foreach($jobsRan as $job) {
+			$message .= $job->getCommand() . PHP_EOL;
 		}
 
+		if($numJobsRan > 0) {
+			$message = "Just ran $numJobsRan $jobPlural, ";
+		}
 
 		$message .= "next job at: " . $wait->format("H:i:s");
 

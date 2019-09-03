@@ -248,6 +248,7 @@ CRON;
 		self::assertEquals(2, $count);
 	}
 
+	/** @run */
 	public function testComments() {
 		$cronContents = <<<CRON
 * * * * * ExampleClass::example1
