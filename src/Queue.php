@@ -18,7 +18,7 @@ class Queue {
 		$this->jobList []= $job;
 	}
 
-	public function secondsUntilNextJob():int {
+	public function secondsUntilNextJob():?int {
 		$nextJob = $this->getNextJob();
 		$now = $this->now();
 		$then = $nextJob->getNextRunDate($now);
