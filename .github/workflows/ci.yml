@@ -9,7 +9,6 @@ jobs:
     steps:
     - name: Composer install
     - uses: actions/checkout@v1
-      id: composer-install
-      uses: php-actions/composer@master
+    - uses: php-actions/composer@master
       with:
        - install
