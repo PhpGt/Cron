@@ -13,4 +13,4 @@ jobs:
     - name: Composer install
       uses: php-actions/composer@master
       with:
-        args: install
+        args: install --no-progress
