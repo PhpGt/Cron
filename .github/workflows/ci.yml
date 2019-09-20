@@ -11,4 +11,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Composer install
-      uses: php-actions/composer@master
+      uses: php-actions/composer@v0.0.3
