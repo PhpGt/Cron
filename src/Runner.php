@@ -39,7 +39,7 @@ class Runner {
 			}
 
 			preg_match(
-				"/(?P<crontab>\S+\s\S+\s\S+\s\S+\s\S+)\s(?P<command>.+)/",
+				"/(?P<crontab>(\S+\s\S+\s\S+\s\S+\s\S+|@\S+))\s(?P<command>.+)/",
 				$line,
 				$matches
 			);

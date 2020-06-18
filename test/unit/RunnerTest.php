@@ -280,6 +280,20 @@ CRON;
 		self::assertEquals(0, $runner->getNumJobs());
 	}
 
+	public function testAtStart() {
+		$cronContents = <<<CRON
+@start ExampleClass::exampleAtStart
+0 * * * * ExampleClass::onTheHour
+CRON;
+
+		$runner = new Runner(
+			$this->mockJobRepository(0),
+			$this->mockQueueRepository(0),
+			$cronContents
+		);
+		self::assertEquals(2, $runner->getNumJobs());
+	}
+
 	protected function mockJobRepository(int...$wait):JobRepository {
 		$isDue = [];
 		$runDate = [];
