@@ -1,7 +1,7 @@
 <?php
 namespace Gt\Cron;
 
-use Gt\Cron\Test\Helper\Override;
+use Gt\Cron\phpunit\Helper\Override;
 
 function sleep() {
 	Override::call("sleep", func_get_args());

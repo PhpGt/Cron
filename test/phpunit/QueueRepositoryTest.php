@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\Test;
+namespace Gt\Cron\phpunit;
 
 use DateTime;
 use Gt\Cron\QueueRepository;

@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\Test\Helper;
+namespace Gt\Cron\phpunit\Helper;
 
 class Override {
 	protected static $callbackMap = [];
