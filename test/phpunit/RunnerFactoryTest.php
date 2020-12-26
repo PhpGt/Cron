@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\phpunit;
+namespace Gt\Cron\Test;
 
 use Gt\Cron\CrontabNotFoundException;
 use Gt\Cron\Runner;

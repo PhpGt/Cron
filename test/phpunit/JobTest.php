@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\phpunit;
+namespace Gt\Cron\Test;
 
 use Cron\CronExpression;
 use DateInterval;
@@ -7,7 +7,7 @@ use DateTime;
 use Gt\Cron\CronException;
 use Gt\Cron\Job;
 use Gt\Cron\ScriptExecutionException;
-use Gt\Cron\phpunit\Helper\Override;
+use Gt\Cron\Test\Helper\Override;
 use PHPUnit\Framework\TestCase;
 
 class JobTest extends TestCase {

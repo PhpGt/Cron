@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\phpunit;
+namespace Gt\Cron\Test;
 
 use Cron\CronExpression;
 use Gt\Cron\Job;

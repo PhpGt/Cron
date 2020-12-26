@@ -1,10 +1,11 @@
 <?php
-namespace Gt\Cron\phpunit\Command;
+namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
 use Gt\Cron\Command\RunCommand;
-use Gt\Cron\phpunit\Helper\ExampleClass;
-use Gt\Cron\phpunit\Helper\Override;
+use Gt\Cron\Test\Command\CommandTestCase;
+use Gt\Cron\Test\Helper\ExampleClass;
+use Gt\Cron\Test\Helper\Override;
 
 /** @runTestsInSeparateProcesses  */
 class RunCommandTest extends CommandTestCase {
@@ -67,20 +68,20 @@ CRON;
 
 		self::assertEquals(
 			"",
-			\Gt\Cron\phpunit\Helper\ExampleClass::$message
+			\Gt\Cron\Test\Helper\ExampleClass::$message
 		);
 		self::assertEquals(
 			0,
-			\Gt\Cron\phpunit\Helper\ExampleClass::$counter
+			\Gt\Cron\Test\Helper\ExampleClass::$counter
 		);
 		$command->run($args);
 		self::assertEquals(
 			"a test message",
-			\Gt\Cron\phpunit\Helper\ExampleClass::$message
+			\Gt\Cron\Test\Helper\ExampleClass::$message
 		);
 		self::assertEquals(
 			123,
-			\Gt\Cron\phpunit\Helper\ExampleClass::$counter
+			\Gt\Cron\Test\Helper\ExampleClass::$counter
 		);
 	}
 
@@ -99,7 +100,7 @@ CRON;
 		$command->run($args);
 		self::assertEquals(
 			1,
-			\Gt\Cron\phpunit\Helper\ExampleClass::$calls
+			\Gt\Cron\Test\Helper\ExampleClass::$calls
 		);
 	}
 
@@ -194,7 +195,7 @@ CRON;
 		);
 		self::assertEquals(
 			1,
-			\Gt\Cron\phpunit\Helper\ExampleClass::$calls
+			\Gt\Cron\Test\Helper\ExampleClass::$calls
 		);
 	}
 

@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\phpunit\Command;
+namespace Gt\Cron\Test\Command;
 
 use DirectoryIterator;
 use Gt\Cli\Stream;
