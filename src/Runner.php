@@ -34,8 +34,7 @@ class Runner {
 				continue;
 			}
 
-			if(strlen($line) > 0
-			&& $line[0] === "#") {
+			if($line[0] === "#") {
 				continue;
 			}
 
