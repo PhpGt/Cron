@@ -34,6 +34,11 @@ class Runner {
 				continue;
 			}
 
+			if(strlen($line) > 0
+			&& $line[0] === "#") {
+				continue;
+			}
+
 			preg_match(
 				"/(?P<crontab>\S+\s\S+\s\S+\s\S+\s\S+)\s(?P<command>.+)/",
 				$line,
@@ -45,11 +50,6 @@ class Runner {
 
 			$crontab = trim($crontab);
 			$command = trim($command);
-
-			if(strlen($crontab) > 0
-			&& $crontab[0] === "#") {
-				continue;
-			}
 
 			try {
 				$job = call_user_func(
