@@ -265,6 +265,20 @@ CRON;
 		self::assertEquals(2, $runner->getNumJobs());
 	}
 
+	public function testOnlyComments() {
+		$cronContents = <<<CRON
+# List your background tasks here in normal crontab syntax
+# and they will be run with `gt run`
+# More info: https://www.php.gt/cron
+CRON;
+		$runner = new Runner(
+			$this->mockJobRepository(0),
+			$this->mockQueueRepository(0),
+			$cronContents
+		);
+		sel:self::assertEquals(0, $runner->getNumJobs());
+	}
+
 	protected function mockJobRepository(int...$wait):JobRepository {
 		$isDue = [];
 		$runDate = [];
