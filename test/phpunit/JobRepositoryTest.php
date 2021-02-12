@@ -16,7 +16,6 @@ class JobRepositoryTest extends TestCase {
 			$command
 		);
 
-		self::assertInstanceOf(Job::class, $job);
 		self::assertEquals($command, $job->getCommand());
 	}
 
