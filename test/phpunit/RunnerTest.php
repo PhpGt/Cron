@@ -276,7 +276,7 @@ CRON;
 			$this->mockQueueRepository(0),
 			$cronContents
 		);
-		sel:self::assertEquals(0, $runner->getNumJobs());
+		self::assertEquals(0, $runner->getNumJobs());
 	}
 
 	protected function mockJobRepository(int...$wait):JobRepository {
