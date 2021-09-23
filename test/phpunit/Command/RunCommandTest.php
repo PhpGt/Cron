@@ -2,7 +2,7 @@
 namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
-use Gt\Cron\Command\RunCommand;
+use Gt\Cron\Cli\RunCommand;
 use Gt\Cron\Test\Command\CommandTestCase;
 use Gt\Cron\Test\Helper\ExampleClass;
 use Gt\Cron\Test\Helper\Override;
@@ -17,7 +17,7 @@ CRON;
 		$stream = $this->getStream();
 		chdir($this->projectDirectory);
 		$command  = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 		$command->run(new ArgumentValueList());
 
 		self::assertStreamError(
@@ -37,7 +37,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 
 		self::assertEquals(
 			0,
@@ -64,7 +64,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 
 		self::assertEquals(
 			"",
@@ -96,7 +96,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 		$command->run($args);
 		self::assertEquals(
 			1,
@@ -126,7 +126,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 		$command->run($args);
 		self::assertEquals(
 			"/path/to/script/doSomething",
@@ -156,7 +156,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 		$command->run($args);
 		self::assertEquals(
 			"/path/to/script/doSomething \"a test message\" 123",
@@ -187,7 +187,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 		$command->run($args);
 		self::assertEquals(
 			"/path/to/script/doSomething \"a test message\" 123",
@@ -212,7 +212,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 
 		$command->run($args);
 
@@ -235,7 +235,7 @@ CRON;
 		$args = new ArgumentValueList();
 		$args->set("once");
 		$command = new RunCommand();
-		$command->setOutput($stream);
+		$command->setStream($stream);
 
 		$command->run($args);
 
