@@ -27,7 +27,7 @@ class RunCommand extends Command {
 			);
 		}
 		catch(CronException $exception) {
-			$this->output->writeLine(
+			$this->stream->writeLine(
 				$exception->getMessage(),
 				Stream::ERROR
 			);
@@ -43,21 +43,21 @@ class RunCommand extends Command {
 
 		if($arguments->contains("now")) {
 			$numRunJobs = $runner->runAll();
-			$this->output->writeLine("Ran $numRunJobs jobs now.");
+			$this->stream->writeLine("Ran $numRunJobs jobs now.");
 		}
 
 		try {
 			$runner->run($arguments->contains("watch"));
 		}
 		catch(ScriptExecutionException $exception) {
-			$this->output->writeLine(
+			$this->stream->writeLine(
 				"Error executing command: "
 				. $exception->getMessage(),
 				Stream::ERROR
 			);
 		}
 		catch(FunctionExecutionException $exception) {
-			$this->output->writeLine(
+			$this->stream->writeLine(
 				"Error executing function: "
 				. $exception->getMessage(),
 				Stream::ERROR
@@ -104,7 +104,7 @@ class RunCommand extends Command {
 			$message .= ". Stopping now.";
 		}
 
-		$this->output->writeLine(
+		$this->stream->writeLine(
 			ucfirst($message)
 		);
 	}
