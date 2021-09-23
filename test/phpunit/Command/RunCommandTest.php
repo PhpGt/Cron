@@ -2,7 +2,7 @@
 namespace Gt\Cron\Test\Command;
 
 use Gt\Cli\Argument\ArgumentValueList;
-use Gt\Cron\Command\RunCommand;
+use Gt\Cron\Cli\RunCommand;
 use Gt\Cron\Test\Command\CommandTestCase;
 use Gt\Cron\Test\Helper\ExampleClass;
 use Gt\Cron\Test\Helper\Override;

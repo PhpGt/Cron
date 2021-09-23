@@ -3,7 +3,7 @@
 
 use Gt\Cli\Application;
 use Gt\Cli\Argument\CommandArgumentList;
-use Gt\Cron\Command\RunCommand;
+use Gt\Cron\Cli\RunCommand;
 
 $autoloadLocations = [
 	getcwd() . "/vendor/autoload.php",

@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Cron\Command;
+namespace Gt\Cron\Cli;
 
 use DateTime;
 use Gt\Cli\Argument\ArgumentValueList;
