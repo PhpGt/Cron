@@ -69,7 +69,7 @@ class RunCommand extends Command {
 		int $jobsRan,
 		?DateTime $wait,
 		bool $continue
-	) {
+	):void {
 		$message = "";
 		$now = new DateTime();
 

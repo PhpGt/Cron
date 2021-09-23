@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class CommandTestCase extends TestCase {
 	protected $projectDirectory;
 
-	public function setUp():void {
+	protected function setUp():void {
 		$this->projectDirectory = implode(DIRECTORY_SEPARATOR, [
 			sys_get_temp_dir(),
 			"phpgt",
@@ -22,7 +22,7 @@ class CommandTestCase extends TestCase {
 		);
 	}
 
-	public function tearDown():void {
+	protected function tearDown():void {
 		$this->recursiveRemove($this->projectDirectory);
 	}
 

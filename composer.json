@@ -3,7 +3,7 @@
 	"description": "Run scripts or static functions at regular intervals.",
 
 	"require": {
-		"php": ">=7.2",
+		"php": ">=7.4",
 		"phpgt/cli": "1.*",
 		"dragonmantank/cron-expression": "^2.2"
 	},
@@ -25,5 +25,12 @@
 
 	"bin": [
 		"bin/cron"
+	],
+	
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/PhpGt"
+		}
 	]
 }

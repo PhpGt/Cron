@@ -5,12 +5,12 @@ use Cron\CronExpression;
 use DateTime;
 
 class Job {
-	protected $expression;
-	protected $command;
-	protected $hasRun;
+	protected CronExpression $expression;
+	protected string $command;
+	protected bool $hasRun;
 
-	public function __construct(CronExpression $factory, string $command) {
-		$this->expression = $factory;
+	public function __construct(CronExpression $expression, string $command) {
+		$this->expression = $expression;
 		$this->command = $command;
 		$this->hasRun = false;
 	}

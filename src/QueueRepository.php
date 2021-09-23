@@ -4,7 +4,7 @@ namespace Gt\Cron;
 use DateTime;
 
 class QueueRepository {
-	protected $className;
+	protected string $className;
 
 	public function __construct(string $className = Queue::class) {
 		$this->className = $className;
